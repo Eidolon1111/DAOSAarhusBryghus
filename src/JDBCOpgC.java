@@ -66,6 +66,14 @@ public class JDBCOpgC {
                 statement.close();
             if (minConnection != null)
                 minConnection.close();
+        } catch (SQLException sqle) {
+            System.out.println("SQL fejl besked: " + sqle.getMessage());
+            System.out.println("SQL fejl kode: " + sqle.getErrorCode());
+            if(sqle.getErrorCode() == 547 && sqle.getMessage().contains("FOREIGN KEY") && sqle.getMessage().contains("salgsId")) {
+                System.out.println("Salg findes ikke!");
+            } else if(sqle.getErrorCode() == 547 && sqle.getMessage().contains("FOREIGN KEY") && sqle.getMessage().contains("prisId")) {
+                System.out.println("Pris findes ikke!");
+            }
         } catch (Exception e) {
             System.out.println("fejl:  " + e.getMessage());
         }
