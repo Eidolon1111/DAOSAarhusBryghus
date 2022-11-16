@@ -50,8 +50,6 @@ public class JDBCOpgA {
             if (minConnection != null)
                 minConnection.close();
         } catch (SQLException sqlException){
-            System.out.println("SQL fejl besked: " + sqlException.getMessage());
-            System.out.println("SQL fejl Kode: " + sqlException.getErrorCode());
             if(sqlException.getErrorCode() == 2627){
                 System.out.println("ProduktID er allerede anvendt");
             } else if(sqlException.getErrorCode() == 2628 && sqlException.getMessage().contains("navn")) {
@@ -64,6 +62,9 @@ public class JDBCOpgA {
                 System.out.println("minimum antal på lager skal være over 0");
             } else if(sqlException.getErrorCode() == 547 && sqlException.getMessage().contains("FOREIGN KEY")){
                 System.out.println("Produktgruppe navn er findes ikke!");
+            } else {
+                System.out.println("SQL fejl besked: " + sqlException.getMessage());
+                System.out.println("SQL fejl Kode: " + sqlException.getErrorCode());
             }
         } catch (Exception e) {
             System.out.println("fejl:  " + e.getMessage());
