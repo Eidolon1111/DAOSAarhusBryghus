@@ -1,29 +1,70 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.*;
 
 public class JDBCOpgA {
     public static void main(String[] args) {
+        opretProdukt();
+    }
+
+    public static void opretProdukt(){
         try {
+            System.out.println("Opret Produkt");
+            BufferedReader inLine = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Indtast ProduktID: ");
+            String ProduktId = inLine.readLine();
+            System.out.println("Intast Produkt navn: ");
+            String navn = inLine.readLine();
+            System.out.println("Indtast antal på lager: ");
+            String antalPaaLager = inLine.readLine();
+            System.out.println("Indtast minimum antal på lager: ");
+            String minimumsAntalPaaLager = inLine.readLine();
+            System.out.println("Indtast antal enheder (f.eks '20' som i '20 liter'): ");
+            String antalEnheder = inLine.readLine();
+            System.out.println("Indtast navn enheder (f.eks 'liter'): ");
+            String enhedNavn = inLine.readLine();
+            System.out.println("Indtast Produktgruppe navn: ");
+            String produktgruppeNavn = inLine.readLine();
+
             Connection minConnection;
-            minConnection = DriverManager
-                    .getConnection("jdbc:sqlserver://localhost;databaseName=TidsRegOpg;user=sa;password=reallyStrongPwd123;");
-            Statement statement = minConnection.createStatement();
+            minConnection = DriverManager.getConnection(
+                    "jdbc:sqlserver://localhost;databaseName=AarhusBryghus;user=sa;password=reallyStrongPwd123;");
 
-            ResultSet result = statement.executeQuery("select * from Medarbejder");
-            while (result.next()) {
-                System.out.println(result.getString(1) + "\t" + result.getString(2) + " \t " + result.getString(3) + " \t " + result.getString(4));
-            }
+            String sql = "insert into Produkt values(?,?,?,?,?,?,?) ";// preparedStatement
+            PreparedStatement prestmt = minConnection.prepareStatement(sql);
+            prestmt.clearParameters();
 
-            if (result != null)
-                result.close();
-            if (statement != null)
-                statement.close();
+            prestmt.setInt(1, Integer.parseInt(ProduktId.trim()));
+            prestmt.setString(2, navn);
+            prestmt.setInt(3, Integer.parseInt(antalPaaLager.trim()));
+            prestmt.setInt(4, Integer.parseInt(minimumsAntalPaaLager.trim()));
+            prestmt.setInt(5, Integer.parseInt(antalEnheder.trim()));
+            prestmt.setString(6, enhedNavn);
+            prestmt.setString(7, produktgruppeNavn);
+
+            prestmt.executeUpdate();
+            System.out.println("Produkt Oprettet!");
+
+            if (prestmt != null)
+                prestmt.close();
             if (minConnection != null)
                 minConnection.close();
-
-
+        } catch (SQLException sqlException){
+            System.out.println("SQL fejl besked: " + sqlException.getMessage());
+            System.out.println("SQL fejl Kode: " + sqlException.getErrorCode());
+            if(sqlException.getErrorCode() == 2627){
+                System.out.println("ProduktID er allerede anvendt");
+            } else if(sqlException.getErrorCode() == 2628 && sqlException.getMessage().contains("navn")) {
+                System.out.println("Indtastet Produkt navn er for langt (max 30 karakterer)");
+            } else if(sqlException.getErrorCode() == 2628 && sqlException.getMessage().contains("enhed")) {
+                System.out.println("Indtastet enhed navn er for langt (max 30 karakterer)");
+            } else if (sqlException.getErrorCode() == 2628 && sqlException.getMessage().contains("produktGruppeNavn")){
+                System.out.println("Indtastet Produktgruppe navn er for langt (max 30 karakterer)");
+            } else if(sqlException.getErrorCode() == 547 && sqlException.getMessage().contains("minimumsAntalPaaLager")){
+                System.out.println("minimum antal på lager skal være over 0");
+            } else if(sqlException.getErrorCode() == 547 && sqlException.getMessage().contains("FOREIGN KEY")){
+                System.out.println("Produktgruppe navn er findes ikke!");
+            }
         } catch (Exception e) {
             System.out.println("fejl:  " + e.getMessage());
         }
