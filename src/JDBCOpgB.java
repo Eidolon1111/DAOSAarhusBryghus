@@ -1,30 +1,50 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.*;
 
 public class JDBCOpgB {
 
     public static void main(String[] args) {
         try {
+            System.out.println("Find daglig omsætning af produkt på dato ");
+            BufferedReader inLine = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Indtast Dato (YYYY-MM-DD): ");
+            String dato = inLine.readLine();
+            System.out.print("Indtast Produktnavn: ");
+            String produktNavn = inLine.readLine();
+
+
             Connection minConnection;
             minConnection = DriverManager
-                    .getConnection("jdbc:sqlserver://localhost;databaseName=TidsRegOpg;user=sa;password=reallyStrongPwd123;");
+                    .getConnection("jdbc:sqlserver://localhost\\SQLExpress;databaseName=AarhusBryghus;user=sa;password=oioioioi1234;");
             Statement statement = minConnection.createStatement();
 
-            ResultSet result = statement.executeQuery("select * from Medarbejder");
-            while (result.next()) {
-                System.out.println(result.getString(1) + "\t" + result.getString(2) + " \t " + result.getString(3) + " \t " + result.getString(4));
-            }
+            String sql = "Execute SamledeSalgProduktPaaDag ?,?";
+            PreparedStatement prestmt = minConnection.prepareStatement(sql);
+            prestmt.clearParameters();
 
-            if (result != null)
-                result.close();
+            prestmt.setString(1, dato);
+            prestmt.setString(2, produktNavn);
+
+            ResultSet res = prestmt.executeQuery();
+            res.next();
+            System.out.println("Produkt: " + res.getString(1) + ", Beløb: " + res.getString(2) + " DKK, Dato: " + res.getString(3).substring(0, 10));
+
+
+            if (prestmt != null)
+                prestmt.close();
             if (statement != null)
                 statement.close();
             if (minConnection != null)
                 minConnection.close();
 
-
+        }
+        catch (SQLException sqlException) {
+            System.out.println("SQL fejl besked: " + sqlException.getMessage());
+            System.out.println("SQL fejl Kode: " + sqlException.getErrorCode());
+            if (sqlException.getErrorCode() == 0) {
+                System.out.println("Salg af dette produkt på valgte dato findes ikke");
+            }
         } catch (Exception e) {
             System.out.println("fejl:  " + e.getMessage());
         }
