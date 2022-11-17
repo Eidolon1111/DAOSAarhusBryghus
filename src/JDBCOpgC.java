@@ -10,7 +10,7 @@ public class JDBCOpgC {
             BufferedReader inLine = new BufferedReader(new InputStreamReader(System.in));
             System.out.print("Indtast antal: ");
             String antal = inLine.readLine();
-            System.out.println("Intast aftalt pris (max to decimaler): ");
+            System.out.println("Intast aftalt pris (max to decimaler) tast enter hvis ingen pris er aftalt: ");
             String aftaltPris = inLine.readLine();
             if (aftaltPris.isBlank()) {
                 aftaltPris = null;
