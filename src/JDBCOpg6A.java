@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 
-public class JDBCOpgA {
+public class JDBCOpg6A {
     public static void main(String[] args) {
         opretProdukt();
     }

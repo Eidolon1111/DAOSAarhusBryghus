@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 
-public class JDBCOpgB {
+public class JDBCOpg6B {
 
     public static void main(String[] args) {
         try {
