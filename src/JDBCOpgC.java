@@ -11,9 +11,9 @@ public class JDBCOpgC {
             System.out.print("Indtast antal: ");
             String antal = inLine.readLine();
             System.out.println("Intast aftalt pris (max to decimaler): ");
-            String aftaltPris = null;
-            if (!inLine.readLine().isBlank()) {
-                aftaltPris = inLine.readLine();
+            String aftaltPris = inLine.readLine();
+            if (aftaltPris.isBlank()) {
+                aftaltPris = null;
             }
             System.out.println("Indtast salgsid: ");
             String salgsId = inLine.readLine();
@@ -22,7 +22,7 @@ public class JDBCOpgC {
 
             Connection minConnection;
             minConnection = DriverManager
-                    .getConnection("jdbc:sqlserver://localhost\\SQLExpress;databaseName=Aarhus bryghus;user=sa;password=qbu65jvt;");
+                    .getConnection("jdbc:sqlserver://localhost;databaseName=AarhusBryghus;user=sa;password=reallyStrongPwd123;");
             Statement statement = minConnection.createStatement();
 
             String sql = "insert into Salgslinje values(?,?,?,?) ";

@@ -16,7 +16,7 @@ public class JDBCOpgB {
 
             Connection minConnection;
             minConnection = DriverManager
-                    .getConnection("jdbc:sqlserver://localhost\\SQLExpress;databaseName=AarhusBryghus;user=sa;password=oioioioi1234;");
+                    .getConnection("jdbc:sqlserver://localhost;databaseName=AarhusBryghus;user=sa;password=reallyStrongPwd123;");
             Statement statement = minConnection.createStatement();
 
             String sql = "Execute SamledeSalgProduktPaaDag ?,?";
