@@ -10,8 +10,11 @@ public class JDBCOpgC {
             BufferedReader inLine = new BufferedReader(new InputStreamReader(System.in));
             System.out.print("Indtast antal: ");
             String antal = inLine.readLine();
-            System.out.println("Intast aftalt pris: ");
-            String aftaltPris = inLine.readLine();
+            System.out.println("Intast aftalt pris (max to decimaler): ");
+            String aftaltPris = null;
+            if (!inLine.readLine().isBlank()) {
+                aftaltPris = inLine.readLine();
+            }
             System.out.println("Indtast salgsid: ");
             String salgsId = inLine.readLine();
             System.out.println("Indtast prisid: ");
@@ -27,7 +30,11 @@ public class JDBCOpgC {
             prestmt.clearParameters();
 
             prestmt.setInt(1, Integer.parseInt(antal.trim()));
-            prestmt.setDouble(2, Double.parseDouble(aftaltPris.trim()));
+            if (aftaltPris == null) {
+                prestmt.setNull(2, Types.DECIMAL);
+            } else {
+                prestmt.setDouble(2, Double.parseDouble(aftaltPris.trim()));
+            }
             prestmt.setInt(3, Integer.parseInt(salgsId.trim()));
             prestmt.setInt(4, Integer.parseInt(prisId.trim()));
 
